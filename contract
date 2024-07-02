@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract ProductRating {
+    // Mapping to store product ratings
+    mapping(address => uint) private productRatings;
+
+    // Function to record product rating
+    function recordRating(uint _rating) public {
+        // Use assert to ensure ratings are between 0 and 5
+        assert(_rating >= 0);
+        productRatings[msg.sender] = _rating;
+    }
+
+    // Function to get rating description based on provided rating
+    function getRatingDescription(uint rating) public pure returns (string memory) {
+        require(rating >= 0 && rating <= 5, "Rating must be between 0 and 5");
+
+        if (rating == 5) {
+            return "Excellent";
+        } else if (rating == 4) {
+            return "Good";
+        } else if (rating == 3) {
+            return "Average";
+        } else if (rating == 2) {
+            return "Below Average";
+        } else {
+            return "Poor";
+        }
+    }
+
+    // Function using revert statement to check whether the product is acceptable
+    function checkAcceptability() public view returns (string memory) {
+        uint rating = productRatings[msg.sender];
+        require(rating >= 0 && rating <= 5, "Rating should be between 0 and 5");
+
+        if (rating >= 3) {
+            return "Acceptable";
+        } else {
+            revert("Not Acceptable: minimum rating to be acceptable is 3");
+        }
+    }
+}
